@@ -186,7 +186,6 @@ Terima kasih telah mempercayakan kebutuhan dokumentasi pernikahan Kakak kepada M
 Untuk membantu kami mempersiapkan kebutuhan dokumentasi serta menyesuaikan timeline acara, mohon Kakak melengkapi formulir berikut:
  
 📋 *[NAMA PAKET] — Booking Form*
-💰 Investasi: [HARGA]
 🔗 Link Form: [LINK PUBLIK]
  
 Mohon lengkapi informasi acara dan baca syarat serta ketentuan yang tersedia pada formulir.
@@ -208,7 +207,6 @@ Terima kasih, kami telah menerima formulir kebutuhan dokumentasi pernikahan Kaka
  
 Berikut rangkuman informasi yang telah kami terima:
 • Paket: [NAMA PAKET]
-• Harga Paket: [HARGA]
 • Jumlah Tamu Undangan: [JAWABAN TAMU]
 • Jumlah Attire: [JAWABAN ATTIRE]
 • Durasi Acara: [JAWABAN DURASI]

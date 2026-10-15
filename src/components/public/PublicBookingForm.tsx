@@ -242,10 +242,6 @@ export const PublicBookingForm: React.FC<PublicBookingFormProps> = ({
               <span className="font-bold text-zinc-950">{packageName}</span>
             </div>
             <div className="flex justify-between border-b border-zinc-200 pb-2">
-              <span className="text-zinc-500">Total Investasi:</span>
-              <span className="font-bold tabular-nums text-zinc-950">{formatRupiah(packagePrice)}</span>
-            </div>
-            <div className="flex justify-between border-b border-zinc-200 pb-2">
               <span className="text-zinc-500">Jumlah Tamu:</span>
               <span className="font-semibold text-zinc-950">{answers['guest_count'] ? `${answers['guest_count']} Orang` : '-'}</span>
             </div>
@@ -349,12 +345,6 @@ export const PublicBookingForm: React.FC<PublicBookingFormProps> = ({
                   Paket Pilihan
                 </span>
                 <span className="font-bold text-xs sm:text-sm block">{packageName}</span>
-              </div>
-              <div className="text-right">
-                <span className="text-[10px] text-zinc-400 block font-semibold">Investasi</span>
-                <span className="text-base sm:text-lg font-extrabold tabular-nums">
-                  {formatRupiah(packagePrice)}
-                </span>
               </div>
             </div>
           </div>
