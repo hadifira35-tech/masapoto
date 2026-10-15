@@ -21,6 +21,7 @@ import { dataService } from './services/dataService';
 import { authService } from './lib/supabaseClient';
 import { User } from '@supabase/supabase-js';
 import { VendorProfile, Package, BookingForm, WhatsAppTemplate } from './types';
+import { INITIAL_VENDOR, INITIAL_PACKAGE, INITIAL_BOOKING_FORM, INITIAL_TEMPLATES } from './lib/storageFallback';
 
 function AppContent() {
   const { showToast } = useToast();
@@ -36,10 +37,10 @@ function AppContent() {
 
   const [publicToken, setPublicToken] = useState<string | null>(null);
 
-  const [vendor, setVendor] = useState<VendorProfile | null>(null);
-  const [packages, setPackages] = useState<Package[]>([]);
-  const [forms, setForms] = useState<BookingForm[]>([]);
-  const [templates, setTemplates] = useState<WhatsAppTemplate[]>([]);
+  const [vendor, setVendor] = useState<VendorProfile>(INITIAL_VENDOR);
+  const [packages, setPackages] = useState<Package[]>([INITIAL_PACKAGE]);
+  const [forms, setForms] = useState<BookingForm[]>([INITIAL_BOOKING_FORM]);
+  const [templates, setTemplates] = useState<WhatsAppTemplate[]>(INITIAL_TEMPLATES);
   const [isLoading, setIsLoading] = useState(false);
 
   // Check URL token for public client view
@@ -152,7 +153,7 @@ function AppContent() {
 
   const shareTpl = templates.find((t) => t.template_type === 'share_form')?.message_body;
   const confirmTpl = templates.find((t) => t.template_type === 'confirm_form')?.message_body;
-  const sampleToken = forms.length > 0 ? forms[0].public_token : '';
+  const sampleToken = forms[0]?.public_token || 'MP_rendi_nita_intimate_77a9';
 
   // 1. If user is opening a client public form:
   if (publicToken) {
@@ -181,7 +182,7 @@ function AppContent() {
     return (
       <LoginView
         onLoginSuccess={() => loadData()}
-        brandName={vendor?.brand_name || 'Massa Photo'}
+        brandName={vendor.brand_name}
       />
     );
   }
@@ -194,8 +195,8 @@ function AppContent() {
         activeTab={activeTab}
         onSelectTab={setActiveTab}
         onOpenCreateBooking={() => setIsCreateBookingOpen(true)}
-        brandName={vendor?.brand_name || 'Massa Photo'}
-        logoUrl={vendor?.logo_url || ''}
+        brandName={vendor.brand_name}
+        logoUrl={vendor.logo_url}
         isMobileOpen={isMobileSidebarOpen}
         onCloseMobile={() => setIsMobileSidebarOpen(false)}
         currentUser={currentUser}

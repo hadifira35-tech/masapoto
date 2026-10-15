@@ -14,14 +14,13 @@ import {
 
 interface PublicBookingFormProps {
   token: string;
-  vendor: VendorProfile | null;
+  vendor: VendorProfile;
 }
 
 export const PublicBookingForm: React.FC<PublicBookingFormProps> = ({
   token,
   vendor,
 }) => {
-  if (!vendor) return <div className="p-8 text-center">Memuat profil vendor...</div>;
   const [form, setForm] = useState<BookingForm | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);

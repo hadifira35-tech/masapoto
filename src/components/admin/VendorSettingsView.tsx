@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 
 interface VendorSettingsViewProps {
-  vendor: VendorProfile | null;
+  vendor: VendorProfile;
   onVendorUpdated: (vendor: VendorProfile) => void;
 }
 
@@ -24,21 +24,7 @@ export const VendorSettingsView: React.FC<VendorSettingsViewProps> = ({
   onVendorUpdated,
 }) => {
   const { showToast } = useToast();
-  const [formData, setFormData] = useState<VendorProfile>(vendor || {
-    id: '',
-    brand_name: '',
-    business_name: '',
-    logo_url: '',
-    phone: '',
-    email: '',
-    address: '',
-    website: '',
-    instagram: '',
-    opening_text: '',
-    closing_text: '',
-    created_at: '',
-    updated_at: '',
-  });
+  const [formData, setFormData] = useState<VendorProfile>(vendor);
   const [isSaving, setIsSaving] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
   const [showUrlInput, setShowUrlInput] = useState(false);
