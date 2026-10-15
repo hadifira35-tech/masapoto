@@ -1,0 +1,6 @@
+{
+  "name": "Web by Nopian Hadi",
+  "description": "Sistem manajemen form booking, paket dokumentasi pernikahan, dan otomasi WhatsApp Massa Photo.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
