@@ -415,6 +415,41 @@ export const dataService = {
     return data as WhatsAppTemplate;
   },
 
+  async updateFormFields(formId: string, responses: Record<string, string>, agreed: boolean): Promise<BookingForm> {
+    const supabase = getSupabase();
+    const now = new Date().toISOString();
+
+    // 1. Delete old responses
+    await supabase.from('booking_responses').delete().eq('booking_form_id', formId);
+
+    // 2. Insert new responses
+    const responseRows = Object.entries(responses).map(([key, val]) => ({
+      booking_form_id: formId,
+      field_key: key,
+      field_label: key,
+      response_value: val,
+    }));
+
+    if (responseRows.length > 0) {
+      await supabase.from('booking_responses').insert(responseRows);
+    }
+
+    // 3. Update form
+    const { data, error } = await supabase
+      .from('booking_forms')
+      .update({
+        status_form: 'submitted',
+        terms_agreed: agreed,
+        updated_at: now,
+      })
+      .eq('id', formId)
+      .select('*, client:clients(*), package:packages(*)')
+      .single();
+
+    if (error) throw new Error(`Gagal update data form: ${error.message}`);
+    return data as BookingForm;
+  },
+
   async getActivityLogs(formId?: string): Promise<BookingActivityLog[]> {
     const supabase = getSupabase();
     let q = supabase

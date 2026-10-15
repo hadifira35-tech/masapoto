@@ -33,7 +33,18 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
   const { showToast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [formStatusFilter, setFormStatusFilter] = useState<string>('ALL');
-  const [bookingStatusFilter, setBookingStatusFilter] = useState<string>('ALL');
+  const [activeBookingTab, setActiveBookingTab] = useState<string>('ALL');
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
+
+  const bookingTabs = [
+    { label: 'Semua', value: 'ALL' },
+    { label: 'Belum Deal', value: 'not_confirmed' },
+    { label: 'Pending', value: 'pending_confirmation' },
+    { label: 'Confirmed', value: 'confirmed' },
+    { label: 'Dibatalkan', value: 'cancelled' },
+    { label: 'Selesai', value: 'completed' },
+  ];
 
   const filteredForms = useMemo(() => {
     return forms.filter((f) => {
@@ -44,11 +55,16 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
         f.package_name_snapshot?.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchFormStatus = formStatusFilter === 'ALL' || f.status_form === formStatusFilter;
-      const matchBookingStatus = bookingStatusFilter === 'ALL' || f.status_booking === bookingStatusFilter;
+      const matchBookingTab = activeBookingTab === 'ALL' || f.status_booking === activeBookingTab;
 
-      return matchSearch && matchFormStatus && matchBookingStatus;
+      const createdDate = f.created_at.split('T')[0];
+      const matchDate =
+        (!startDate || createdDate >= startDate) &&
+        (!endDate || createdDate <= endDate);
+
+      return matchSearch && matchFormStatus && matchBookingTab && matchDate;
     });
-  }, [forms, searchTerm, formStatusFilter, bookingStatusFilter]);
+  }, [forms, searchTerm, formStatusFilter, activeBookingTab, startDate, endDate]);
 
   const copyFormLink = (e: React.MouseEvent, token: string) => {
     e.stopPropagation();
@@ -64,11 +80,10 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
       return;
     }
     const publicUrl = `${window.location.origin}?token=${form.public_token}`;
-    const defaultTpl = `Halo Kak [NAMA KLIEN] 👋✨\n\nTerima kasih telah mempercayakan kebutuhan dokumentasi pernikahan kepada Massa Photo.\n\nMohon melengkapi formulir kebutuhan acara berikut:\n\n📋 *[NAMA PAKET] — Booking Form*\n💰 Investasi: [HARGA]\n🔗 Link Form: [LINK PUBLIK]\n\nTerima kasih! 🙏✨`;
+    const defaultTpl = `Halo Kak [NAMA KLIEN] 👋✨\n\nTerima kasih telah mempercayakan kebutuhan dokumentasi pernikahan kepada Massa Photo.\n\nMohon melengkapi formulir kebutuhan acara berikut:\n\n📋 *[NAMA PAKET] — Booking Form*\n🔗 Link Form: [LINK PUBLIK]\n\nTerima kasih! 🙏✨`;
     const message = interpolateTemplate(shareTemplate || defaultTpl, {
       'NAMA KLIEN': form.client.groom_bride_names,
       'NAMA PAKET': form.package_name_snapshot || form.package?.name || 'Paket Dokumentasi',
-      'HARGA': formatRupiah(form.package_price_snapshot || form.package?.price || 0),
       'LINK PUBLIK': publicUrl,
     });
     const waUrl = generateWhatsAppLink(form.client.whatsapp_number, message);
@@ -81,7 +96,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
       showToast('Nomor WhatsApp klien tidak valid', 'error');
       return;
     }
-    const defaultTpl = `Halo Kak [NAMA KLIEN] 👋✨\n\nTerima kasih, kami telah menerima formulir kebutuhan dokumentasi pernikahan Kakak.\n\n• Paket: [NAMA PAKET]\n• Investasi: [HARGA]\n• Tamu: [JAWABAN TAMU]\n• Attire: [JAWABAN ATTIRE]\n• Durasi: [JAWABAN DURASI]\n• Selesai: [JAWABAN WAKTU]\n\nTim Massa Photo akan segera menindaklanjuti proses booking selanjutnya. Terima kasih! 🙏✨`;
+    const defaultTpl = `Halo Kak [NAMA KLIEN] 👋✨\n\nTerima kasih, kami telah menerima formulir kebutuhan dokumentasi pernikahan Kakak.\n\n• Paket: [NAMA PAKET]\n• Jumlah Tamu: [JAWABAN TAMU]\n• Jumlah Attire: [JAWABAN ATTIRE]\n• Durasi: [JAWABAN DURASI]\n• Selesai: [JAWABAN WAKTU]\n\nTim Massa Photo akan segera menindaklanjuti proses booking selanjutnya. Terima kasih! 🙏✨`;
     const res = form.responses || {};
     const guestAnswer = res['guest_count'] ? `${res['guest_count']} Orang` : '-';
     const attireAnswer = res['attire_count'] ? `${res['attire_count']} Attire` : '-';
@@ -91,7 +106,6 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
     const message = interpolateTemplate(confirmTemplate || defaultTpl, {
       'NAMA KLIEN': form.client.groom_bride_names,
       'NAMA PAKET': form.package_name_snapshot || form.package?.name || 'Paket Dokumentasi',
-      'HARGA': formatRupiah(form.package_price_snapshot || form.package?.price || 0),
       'JAWABAN TAMU': guestAnswer,
       'JAWABAN ATTIRE': attireAnswer,
       'JAWABAN DURASI': durationAnswer,
@@ -103,7 +117,6 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
 
   return (
     <div className="space-y-4">
-      {/* Top Header & Search Bar */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         <div>
           <h2 className="text-base sm:text-lg font-bold text-zinc-950">Data Klien</h2>
@@ -120,8 +133,7 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
         </button>
       </div>
 
-      {/* Filter and Search Bar */}
-      <div className="bg-white p-3 rounded-xl border border-zinc-200 shadow-xs flex flex-col md:flex-row items-stretch md:items-center gap-2.5 text-xs">
+      <div className="bg-white p-3.5 rounded-xl border border-zinc-200 shadow-xs flex flex-col md:flex-row items-stretch md:items-center gap-2.5 text-xs">
         <div className="relative flex-1">
           <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
           <input
@@ -129,31 +141,48 @@ export const ClientsView: React.FC<ClientsViewProps> = ({
             placeholder="Cari pengantin atau nomor WhatsApp..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 border border-zinc-200 rounded-lg text-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-950 text-xs"
+            className="w-full pl-9 pr-3 py-1.5 border border-zinc-300 rounded-lg text-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-950 text-xs"
           />
         </div>
 
-        <div className="flex items-center gap-2">
-          <select
-            value={formStatusFilter}
-            onChange={(e) => setFormStatusFilter(e.target.value)}
-            className="flex-1 sm:flex-initial px-2.5 py-1.5 border border-zinc-200 rounded-lg bg-white text-zinc-800 text-xs focus:outline-none"
-          >
-            <option value="ALL">Semua Form</option>
-            <option value="awaiting_response">Menunggu Form</option>
-            <option value="submitted">Form Terkirim</option>
-          </select>
+        <input
+          type="date"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+          className="px-3 py-1.5 border border-zinc-300 rounded-lg bg-white text-zinc-800 text-xs focus:outline-none"
+        />
+        <input
+          type="date"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+          className="px-3 py-1.5 border border-zinc-300 rounded-lg bg-white text-zinc-800 text-xs focus:outline-none"
+        />
 
-          <select
-            value={bookingStatusFilter}
-            onChange={(e) => setBookingStatusFilter(e.target.value)}
-            className="flex-1 sm:flex-initial px-2.5 py-1.5 border border-zinc-200 rounded-lg bg-white text-zinc-800 text-xs focus:outline-none"
+        <select
+          value={formStatusFilter}
+          onChange={(e) => setFormStatusFilter(e.target.value)}
+          className="px-3 py-1.5 border border-zinc-300 rounded-lg bg-white text-zinc-800 text-xs focus:outline-none"
+        >
+          <option value="ALL">Semua Form</option>
+          <option value="awaiting_response">Menunggu Form</option>
+          <option value="submitted">Form Terkirim</option>
+        </select>
+      </div>
+
+      <div className="flex gap-1.5 overflow-x-auto pb-1 border-b border-zinc-200">
+        {bookingTabs.map((tab) => (
+          <button
+            key={tab.value}
+            onClick={() => setActiveBookingTab(tab.value)}
+            className={`px-3.5 py-2 text-xs font-semibold whitespace-nowrap rounded-t-lg transition-colors ${
+              activeBookingTab === tab.value
+                ? 'bg-zinc-950 text-white'
+                : 'bg-white text-zinc-600 hover:bg-zinc-100'
+            }`}
           >
-            <option value="ALL">Semua Booking</option>
-            <option value="not_confirmed">Belum Deal</option>
-            <option value="confirmed">Confirmed</option>
-          </select>
-        </div>
+            {tab.label}
+          </button>
+        ))}
       </div>
 
       {/* Data Container */}
