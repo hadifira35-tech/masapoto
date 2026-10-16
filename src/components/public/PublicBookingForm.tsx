@@ -203,232 +203,145 @@ export const PublicBookingForm: React.FC<PublicBookingFormProps> = ({
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50 text-zinc-950 py-6 sm:py-12 px-3 sm:px-6">
-      <div className="max-w-xl mx-auto space-y-5">
+    <div className="min-h-screen bg-white text-zinc-950 py-10 px-4 sm:px-6">
+      <div className="max-w-xl mx-auto space-y-10">
         
-        {/* Top Header Card */}
-        <div className="bg-white rounded-2xl border border-zinc-200 shadow-xs overflow-hidden">
-          <div className="p-6 sm:p-8 space-y-5">
-            <div className="flex items-center justify-between pb-4 border-b border-zinc-100">
-              <div className="flex items-center gap-3">
-                {vendor.logo_url ? (
-                  <div className="w-12 h-12 rounded-xl border border-zinc-200 overflow-hidden bg-white flex items-center justify-center p-1.5 shadow-xs shrink-0">
-                    <img
-                      src={vendor.logo_url}
-                      alt={vendor.brand_name}
-                      referrerPolicy="no-referrer"
-                      className="w-full h-full object-contain"
-                    />
-                  </div>
-                ) : (
-                  <div className="w-12 h-12 rounded-xl bg-zinc-950 text-white flex items-center justify-center font-bold text-sm shrink-0">
-                    MP
-                  </div>
-                )}
-                <div>
-                  <h1 className="text-sm font-bold text-zinc-950 tracking-tight">{vendor.brand_name}</h1>
-                  <p className="text-[11px] text-zinc-500 font-medium">Official Wedding Documentation</p>
-                </div>
+        {/* Top Header Card - Clean Editorial Style */}
+        <div className="space-y-6">
+          <div className="flex items-center gap-4 border-b border-zinc-100 pb-6">
+            {vendor.logo_url ? (
+              <div className="w-14 h-14 rounded-full border border-zinc-100 overflow-hidden bg-white flex items-center justify-center p-2 shrink-0">
+                <img
+                  src={vendor.logo_url}
+                  alt={vendor.brand_name}
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-contain"
+                />
               </div>
-
-              <span className="inline-flex items-center gap-1 bg-zinc-100 text-zinc-800 px-2.5 py-1 rounded-lg text-[11px] font-mono font-semibold border border-zinc-200">
-                <Calendar className="w-3.5 h-3.5 text-zinc-500" /> Form Publik
-              </span>
-            </div>
-
-            <div className="space-y-1.5">
-              <h2 className="text-lg sm:text-xl font-extrabold text-zinc-950 tracking-tight">
-                Halo, {form.client?.groom_bride_names || 'Calon Pengantin'} 👋
-              </h2>
-              <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed">
-                {vendor.opening_text}
-              </p>
-            </div>
-
-            {/* Selected Package Banner */}
-            <div className="p-4 rounded-xl bg-zinc-950 text-white flex items-center justify-between gap-4 shadow-sm">
-              <div className="space-y-0.5">
-                <span className="text-[10px] text-zinc-400 uppercase tracking-widest block font-bold">
-                  Paket Pilihan Klien
-                </span>
-                <span className="font-extrabold text-sm sm:text-base block tracking-tight">{packageName}</span>
+            ) : (
+              <div className="w-14 h-14 rounded-full bg-zinc-900 text-white flex items-center justify-center font-bold text-lg shrink-0">
+                MP
               </div>
-              <span className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-white shrink-0">
-                <Sparkles className="w-4 h-4" />
-              </span>
+            )}
+            <div>
+              <h1 className="text-sm font-bold text-zinc-950 tracking-tight">{vendor.brand_name}</h1>
+              <p className="text-xs text-zinc-500 font-medium tracking-wide uppercase">Official Wedding Booking</p>
             </div>
+          </div>
+
+          <div className="space-y-3">
+            <h2 className="text-2xl sm:text-3xl font-light text-zinc-950 tracking-tight">
+              Halo, <span className="font-semibold">{form.client?.groom_bride_names || 'Calon Pengantin'}</span>.
+            </h2>
+            <p className="text-sm text-zinc-600 leading-relaxed max-w-md">
+              {vendor.opening_text}
+            </p>
           </div>
         </div>
 
-        {/* Form Body */}
-        <form onSubmit={handleSubmit} className="space-y-5">
-          
-          {/* Section 1: Event Fields */}
-          <div className="bg-white rounded-2xl border border-zinc-200 shadow-xs p-6 sm:p-8 space-y-4">
-            <div className="border-b border-zinc-100 pb-3">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-950">
-                1. Rincian & Kebutuhan Acara
-              </h3>
-              <p className="text-xs text-zinc-500 mt-0.5">
-                Silakan lengkapi informasi di bawah ini untuk persiapan timeline hari bahagia Anda.
-              </p>
+        {/* Selected Package Banner - Minimalist */}
+        <div className="border-t border-b border-zinc-200 py-6">
+          <div className="flex items-center justify-between gap-4">
+            <div className="space-y-1">
+              <span className="text-[10px] text-zinc-400 uppercase tracking-widest font-bold">
+                Paket Pilihan
+              </span>
+              <span className="font-semibold text-lg sm:text-xl text-zinc-950 tracking-tight">{packageName}</span>
             </div>
+            <span className="text-sm font-medium text-zinc-950">{formatRupiah(form.package_price_snapshot || form.package?.price || 0)}</span>
+          </div>
+        </div>
 
-            <div className="space-y-4">
-              {fields.map((field) => {
-                const isDurationField = field.field_key === 'event_duration';
-                const isTimeField = field.field_type === 'time';
-                const isGuestField = field.field_key === 'guest_count';
-                const isAttireField = field.field_key === 'attire_count';
+        {/* Form Body - Refined Structure */}
+        <form onSubmit={handleSubmit} className="space-y-10">
+          
+          <div className="space-y-6">
+            <h3 className="text-sm font-semibold uppercase tracking-widest text-zinc-900">
+              01. Rincian Acara
+            </h3>
 
-                return (
-                  <div key={field.id} className="space-y-1.5">
-                    <div className="flex items-center justify-between text-xs">
-                      <label className="font-bold text-zinc-900">
-                        {field.field_label} {field.is_required && <span className="text-zinc-950">*</span>}
-                      </label>
-                      
-                      {isDurationField ? (
-                        <span className="text-[11px] text-zinc-500 font-semibold tabular-nums">
-                          Maks. {field.max_val ?? form.package?.max_duration_hours ?? 5} Jam
-                        </span>
-                      ) : isGuestField ? (
-                        <span className="text-[11px] text-zinc-400 tabular-nums">
-                          Batas intimate 10–150 Orang
-                        </span>
-                      ) : isAttireField ? (
-                        <span className="text-[11px] text-zinc-400 tabular-nums">
-                          Standar 1 Attire
-                        </span>
-                      ) : null}
-                    </div>
-
-                    <div className="relative">
-                      <input
-                        type={field.field_type === 'number' ? 'number' : field.field_type}
-                        required={field.is_required}
-                        value={answers[field.field_key] || ''}
-                        min={field.min_val ?? 1}
-                        max={isDurationField ? (field.max_val ?? form.package?.max_duration_hours ?? 5) : undefined}
-                        placeholder={field.placeholder || ''}
-                        onChange={(e) => handleInputChange(field.field_key, e.target.value)}
-                        className="w-full px-3.5 py-2.5 text-xs sm:text-sm border border-zinc-300 rounded-xl focus:outline-none focus:ring-1 focus:ring-zinc-950 bg-white text-zinc-950 tabular-nums shadow-2xs transition-all"
-                      />
-                      {field.unit && (
-                        <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-zinc-500 pointer-events-none">
-                          {field.unit}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
+            <div className="space-y-5">
+              {fields.map((field) => (
+                <div key={field.id} className="space-y-2">
+                  <label className="block text-xs font-semibold text-zinc-950 uppercase tracking-wide">
+                    {field.field_label} {field.is_required && <span className="text-zinc-400">*</span>}
+                  </label>
+                  <input
+                    type={field.field_type === 'number' ? 'number' : field.field_type}
+                    required={field.is_required}
+                    value={answers[field.field_key] || ''}
+                    placeholder={field.placeholder || ''}
+                    onChange={(e) => handleInputChange(field.field_key, e.target.value)}
+                    className="w-full px-0 py-3 text-sm border-b border-zinc-200 focus:outline-none focus:border-zinc-950 bg-transparent text-zinc-950 tabular-nums transition-colors"
+                  />
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Section 2: Terms and Conditions */}
-          <div className="bg-white rounded-2xl border border-zinc-200 shadow-xs p-6 sm:p-8 space-y-4">
-            <div className="border-b border-zinc-100 pb-3">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-950">
-                2. Syarat & Ketentuan Layanan
-              </h3>
-              <p className="text-xs text-zinc-500 mt-0.5">
-                Harap baca ketentuan dokumentasi di bawah ini dengan saksama.
-              </p>
-            </div>
+          <div className="space-y-6">
+            <h3 className="text-sm font-semibold uppercase tracking-widest text-zinc-900">
+              02. Syarat & Ketentuan
+            </h3>
 
-            <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-xl text-xs space-y-2 text-zinc-800 leading-relaxed">
-              <ul className="space-y-2">
-                {termsList.map((term, idx) => (
-                  <li key={idx} className="flex items-start gap-2.5">
-                    <span className="font-bold text-zinc-950 shrink-0">{idx + 1}.</span>
-                    <span>{term}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Agreement Options */}
-            <div className="pt-2 space-y-2.5 text-xs">
-              <div>
-                <label className="block font-bold text-zinc-950 uppercase tracking-wider text-[11px]">
-                  Persetujuan Resmi Klien *
-                </label>
-                <p className="text-[11px] text-zinc-500 mt-0.5">
-                  Pilih salah satu status persetujuan di bawah sebelum mengirimkan data.
+            <div className="space-y-3 text-xs text-zinc-600 leading-relaxed">
+              {termsList.map((term, idx) => (
+                <p key={idx} className="flex gap-3">
+                  <span className="font-medium text-zinc-950 shrink-0">{idx + 1}.</span>
+                  <span>{term}</span>
                 </p>
-              </div>
+              ))}
+            </div>
 
-              <label
-                className={`flex items-start gap-3 p-3.5 rounded-xl border cursor-pointer transition-all ${
-                  agreementChoice === true
-                    ? 'bg-zinc-950 border-zinc-950 text-white shadow-sm'
-                    : 'bg-white border-zinc-300 text-zinc-900 hover:bg-zinc-50'
-                }`}
-              >
+            <div className="pt-4 space-y-4">
+              <label className="flex items-center gap-3 cursor-pointer group">
                 <input
                   type="radio"
                   name="agreement"
                   checked={agreementChoice === true}
-                  onChange={() => {
-                    setAgreementChoice(true);
-                    setSubmitError(null);
-                  }}
-                  className="mt-0.5 accent-zinc-950"
+                  onChange={() => setAgreementChoice(true)}
+                  className="w-4 h-4 text-zinc-950 border-zinc-300 focus:ring-zinc-950"
                 />
-                <span className="font-medium leading-relaxed text-xs sm:text-sm">
-                  Saya telah membaca, memahami, dan <strong className="font-bold">menyetujui</strong> seluruh syarat dan ketentuan di atas.
+                <span className="text-sm text-zinc-900 group-hover:text-zinc-950 transition-colors">
+                  Saya menyetujui seluruh ketentuan di atas.
                 </span>
               </label>
 
-              <label
-                className={`flex items-start gap-3 p-3.5 rounded-xl border cursor-pointer transition-all ${
-                  agreementChoice === false
-                    ? 'bg-zinc-950 border-zinc-950 text-white shadow-sm'
-                    : 'bg-white border-zinc-300 text-zinc-900 hover:bg-zinc-50'
-                }`}
-              >
+              <label className="flex items-center gap-3 cursor-pointer group">
                 <input
                   type="radio"
                   name="agreement"
                   checked={agreementChoice === false}
-                  onChange={() => {
-                    setAgreementChoice(false);
-                    setSubmitError(null);
-                  }}
-                  className="mt-0.5 accent-zinc-950"
+                  onChange={() => setAgreementChoice(false)}
+                  className="w-4 h-4 text-zinc-950 border-zinc-300 focus:ring-zinc-950"
                 />
-                <span className="font-medium leading-relaxed text-xs sm:text-sm">
-                  Saya <strong className="font-bold">tidak menyetujui</strong> syarat dan ketentuan.
+                <span className="text-sm text-zinc-900 group-hover:text-zinc-950 transition-colors">
+                  Saya tidak menyetujui ketentuan.
                 </span>
               </label>
             </div>
           </div>
 
-          {/* Error Banner */}
           {submitError && (
-            <div className="p-3.5 bg-zinc-950 text-white rounded-xl text-xs flex items-center gap-2.5 shadow-sm">
-              <AlertCircle className="w-4 h-4 text-zinc-300 shrink-0" />
-              <span className="font-medium">{submitError}</span>
+            <div className="p-4 bg-zinc-50 border border-zinc-200 text-zinc-950 text-xs font-medium rounded">
+              {submitError}
             </div>
           )}
 
-          {/* Submit Button */}
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full py-4 px-5 bg-zinc-950 hover:bg-zinc-800 text-white rounded-2xl text-xs sm:text-sm font-extrabold flex items-center justify-center gap-2.5 shadow-md transition-all cursor-pointer disabled:opacity-50"
+            className="w-full py-4 bg-zinc-950 hover:bg-black text-white text-xs font-bold uppercase tracking-widest transition-all disabled:opacity-50"
           >
-            <Send className="w-4 h-4" />
-            <span>{isSubmitting ? 'Mengirimkan Ringkasan Acara...' : 'Kirim Formulir & Setujui Ketentuan'}</span>
+            {isSubmitting ? 'Mengirim...' : 'Kirim & Setujui'}
           </button>
         </form>
 
-        <div className="text-center text-[11px] text-zinc-400 py-4 flex items-center justify-center gap-1.5">
-          <ShieldCheck className="w-4 h-4 text-zinc-400" />
-          <span>Protected by {vendor.brand_name} Secure Digital Agreement</span>
+        <div className="text-center text-[10px] text-zinc-400 py-6 border-t border-zinc-100 uppercase tracking-widest">
+          {vendor.brand_name} Digital Agreement
         </div>
       </div>
     </div>
   );
+
 };
